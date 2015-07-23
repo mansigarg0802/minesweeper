@@ -6,7 +6,7 @@ import java.lang.*;
 class minesweeper extends WindowAdapter implements WindowListener,MouseListener,ActionListener
 {
  int row=12,col=12;
-static Frame f1;
+ Frame f1;
  Button b[][]=new Button[row][col];
  Button b1,b2;
  boolean bomb[][]=new boolean[row][col];
@@ -17,7 +17,7 @@ TextField t[]=new TextField[2];
 int sbomb;Panel p1,p2;
 Label l1,l2;
 int count=0;
-int rx,ry;	
+int rx,ry,score,x;
 static int numbombs;
 minesweeper()
 {
@@ -26,7 +26,7 @@ p1=new Panel();p2=new Panel();
 f1=new Frame("minesweeper");
 p1.setLayout(new GridLayout(row,col));
 p2.setLayout(new GridLayout(1,6));
-l1=new Label("Score");l2=new Label("no. of bombs");
+l1=new Label("Score");l2=new Label("no. of bombs(<93)");
 for(int i=0;i<row;i++)
 {
 for(int j=0;j<col;j++)
@@ -52,15 +52,16 @@ p2.add(b1);b1.addActionListener(this);p2.add(b2);b2.addActionListener(this);
 f1.add(p1,BorderLayout.CENTER);
 f1.add(p2,BorderLayout.SOUTH);
 f1.addWindowListener(this);
-f1.setFont(new Font("Arial",1,14));
-
 f1.setVisible(true);f1.setSize(900,600);
+f1.setResizable(false);
+JOptionPane.showMessageDialog(f1,"Enter no. of bombs");
+
 }
 public int getbomb()
 {
 	int nb=Integer.parseInt(t[1].getText());
-	int x=(3*nb)/4;
-	l2.setText("no. of bombs(< "+x+")");
+	x=(row*col)-nb;
+	t[0].setText(""+score+"/"+x);
 	return nb;
 	}
 public void random()
@@ -173,6 +174,9 @@ public void mousePressed(MouseEvent e)
 			          bb.setForeground(Color.black);
 			          bb.setLabel(""+sbomb);
 			     	 bb.setEnabled (false);
+			     	 score++;
+			     	t[0].setText(""+score+"/"+x);
+
 			}
 			}
 			}
@@ -200,6 +204,7 @@ public void actionPerformed(ActionEvent e)
 {
 	Button bb=(Button)e.getSource();
 	if(bb==b1){
+		x=0;score=0;
 	numbombs=getbomb();
 
 	for(int i=0;i<row;i++){
@@ -212,6 +217,7 @@ public void actionPerformed(ActionEvent e)
 			flag[i][j]=false;
 			b[i][j].setBackground(c);
 			b[i][j].setForeground(Color.black);
+			
 		}
 	}
 	random();
@@ -232,7 +238,8 @@ public void actionPerformed(ActionEvent e)
 	{}
 public static void main(String ar[])
 {
-minesweeper ob=new minesweeper();
+ minesweeper ob=new minesweeper();
+ 
 }
 public void windowClosing(WindowEvent e){
 int a=JOptionPane.showConfirmDialog(f1,"Are You Sure???");
